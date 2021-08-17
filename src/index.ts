@@ -10,21 +10,25 @@ const photoDir = __dirname + '/photos/'
 const fullDir = photoDir + 'full/'
 const thumbDir = photoDir + 'thumb/'
 
-
-
-app.use(express.static(thumbDir))
-//app.use('/photos', express.static('thumb'));
-
-app.get('/api', (req, res) => {
-    const errors = []
-    //check for query string that all variables exist
-    const fileName = req.query.filename
+//check for query string that all variables exist
+function testFileName(fileName: String, errors: Array<string>): void {
     if (fileName === undefined || fileName === null || Object.keys(fileName).length === 0) {
         console.log("filename needed in query string")
         errors.push("filename needed in query string")
     } else {
         console.log(`the filename entered is ${fileName}`)
     }
+}
+
+app.use(express.static(thumbDir))
+//app.use('/photos', express.static('thumb'));
+
+app.get('/api', (req, res) => {
+    const errors: Array<string> = []
+
+    const fileName = req.query.filename || ''
+
+    testFileName(fileName.toString(), errors);
     //check that a width was entered as a number
     //Need to check if this value is numberic
     const width = req.query.width
@@ -92,3 +96,7 @@ app.get('/api', (req, res) => {
 app.listen(port, () => {
     console.log(`server is working on local host${port}`);
 })
+
+export default {
+    testFileName
+};

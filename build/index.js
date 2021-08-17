@@ -12,11 +12,8 @@ var sharp = require('sharp');
 var photoDir = __dirname + '/photos/';
 var fullDir = photoDir + 'full/';
 var thumbDir = photoDir + 'thumb/';
-app.use('/photos', express_1.default.static(__dirname + '/photos'));
-app.get('/api', function (req, res) {
-    var errors = [];
-    //check for query string that all variables exist
-    var fileName = req.query.filename;
+//check for query string that all variables exist
+function testFileName(fileName, errors) {
     if (fileName === undefined || fileName === null || Object.keys(fileName).length === 0) {
         console.log("filename needed in query string");
         errors.push("filename needed in query string");
@@ -24,6 +21,13 @@ app.get('/api', function (req, res) {
     else {
         console.log("the filename entered is " + fileName);
     }
+}
+app.use(express_1.default.static(thumbDir));
+//app.use('/photos', express.static('thumb'));
+app.get('/api', function (req, res) {
+    var errors = [];
+    var fileName = req.query.filename || '';
+    testFileName(fileName.toString(), errors);
     //check that a width was entered as a number
     //Need to check if this value is numberic
     var width = req.query.width;
@@ -59,23 +63,32 @@ app.get('/api', function (req, res) {
     }
     else {
         //see if the thumbnail doesn't exist then run sharp
-        var thumbFileName = "" + thumbDir + fileName + "_" + width + "x" + height + ".jpeg";
-        console.log(thumbFileName);
-        var thumbExists = fs_1.default.existsSync(thumbFileName);
+        var thumbFileName_1 = fileName + "_" + width + "x" + height + ".jpeg";
+        var thumbFilePath = "" + thumbDir + thumbFileName_1;
+        var thumbExists = fs_1.default.existsSync(thumbFilePath);
         if (!thumbExists) {
             console.log("Hey I'm misssing!");
-            //run the image through sharp
+            //run the image through sharp and render photo
             sharp(fullDir + fileName + '.jpeg')
-                .resize(200, 200)
-                .toFile(thumbFileName, function (err, info) {
-                // output.jpg is a 200 pixels wide and 200 pixels high image
-                // containing a scaled and cropped version of input.jpge
+                .resize(Number(width), Number(height))
+                .toFile(thumbFilePath, function (err, info) {
+                if (err === null) {
+                    res.send("<img src=\"" + thumbFileName_1 + "\" />");
+                }
+                else {
+                    res.send(err);
+                }
             });
         }
-        //render photo
-        res.send();
+        else {
+            //image exists ---show image
+            res.send("<img src=\"" + thumbFileName_1 + "\" />");
+        }
     }
 });
 app.listen(port, function () {
     console.log("server is working on local host" + port);
 });
+exports.default = {
+    testFileName: testFileName
+};

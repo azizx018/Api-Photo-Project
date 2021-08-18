@@ -57,36 +57,33 @@ app.get('/api', function (req, res) {
     testQueryStringNumber(height.toString(), 'height', errors);
     checkIfTheFileAlreadyExists(fullDir, fileName.toString(), errors);
     //this checks the error array and the thumb and creates an image if is doesn't exist
-    function checkErrorsAndMakeThumb() {
-        if (errors.length > 0) {
-            res.send(errors);
+    if (errors.length > 0) {
+        res.send(errors);
+    }
+    else {
+        //see if the thumbnail doesn't exist then run sharp
+        var thumbFileName_1 = fileName + "_" + width + "x" + height + ".jpeg";
+        var thumbFilePath = "" + thumbDir + thumbFileName_1;
+        var thumbExists = fs_1.default.existsSync(thumbFilePath);
+        if (!thumbExists) {
+            console.log("This photo isn't created yet, but Sharp will make your request!");
+            //run the image through sharp and render photo
+            sharp(fullDir + fileName + '.jpeg')
+                .resize(Number(width), Number(height))
+                .toFile(thumbFilePath, function (err, info) {
+                if (err === null) {
+                    res.send("<img src=\"" + thumbFileName_1 + "\" />");
+                }
+                else {
+                    res.send(err);
+                }
+            });
         }
         else {
-            //see if the thumbnail doesn't exist then run sharp
-            var thumbFileName_1 = fileName + "_" + width + "x" + height + ".jpeg";
-            var thumbFilePath = "" + thumbDir + thumbFileName_1;
-            var thumbExists = fs_1.default.existsSync(thumbFilePath);
-            if (!thumbExists) {
-                console.log("Hey I'm misssing!");
-                //run the image through sharp and render photo
-                sharp(fullDir + fileName + '.jpeg')
-                    .resize(Number(width), Number(height))
-                    .toFile(thumbFilePath, function (err, info) {
-                    if (err === null) {
-                        res.send("<img src=\"" + thumbFileName_1 + "\" />");
-                    }
-                    else {
-                        res.send(err);
-                    }
-                });
-            }
-            else {
-                //image exists ---show image
-                res.send("<img src=\"" + thumbFileName_1 + "\" />");
-            }
+            //image exists ---show image
+            res.send("<img src=\"" + thumbFileName_1 + "\" />");
         }
     }
-    checkErrorsAndMakeThumb();
 });
 app.listen(port, function () {
     console.log("server is working on local host" + port);
@@ -94,5 +91,5 @@ app.listen(port, function () {
 exports.default = {
     testFileName: testFileName,
     testQueryStringNumber: testQueryStringNumber,
-    checkIfTheFileAlreadyExists: checkIfTheFileAlreadyExists
+    checkIfTheFileAlreadyExists: checkIfTheFileAlreadyExists,
 };

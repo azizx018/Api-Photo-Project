@@ -1,4 +1,9 @@
 import index from "../index"
+const sharp = require('sharp');
+
+const photoDir = __dirname + '/photos/'
+const fullDir = photoDir + 'full/'
+const thumbDir = photoDir + 'thumb/'
 
 describe("query string", () => {
     it("should check the error array is empty", () => {
@@ -26,19 +31,31 @@ it("should check the error array for height and width has an error", () => {
     expect(errors.length).toEqual(1)
 })
 it("checks the error array for no file present", () => {
-    const photoDir = __dirname + '/photos/'
-    const fullDir = photoDir + 'full/'
     const errors: Array<string> = []
     const fileName = " "
     index.checkIfTheFileAlreadyExists(fullDir, fileName, errors)
     expect(errors.length).toEqual(1)
 
 })
-it("checks if the file is in the forlder", () => {
-    const photoDir = __dirname + '/photos/'
-    const fullDir = photoDir + 'full/'
+it("checks if the file is in the folder", () => {
     const errors: Array<string> = []
     const fileName = "fjord"
     index.checkIfTheFileAlreadyExists(fullDir, fileName, errors)
     expect(fileName).toBeTruthy()
+})
+
+it("makes a thumb image", () => {
+    sharp(fullDir + 'fjord.jpeg')
+        .resize((205), (200))
+        .toFile(thumbDir + 'testresult.jpeg', function (err: Error, info: Object) {
+            expect(err).toBeNull()
+        }
+})
+
+it("throws an error if there is not an image in the full folder", () => {
+    sharp(fullDir + 'fjord.jpeg')
+        .resize((205), (200))
+        .toFile(thumbDir + 'testresult.jpeg', function (err: Error, info: Object) {
+            expect(err).toBeNull()
+        }
 })

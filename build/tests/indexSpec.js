@@ -16,3 +16,21 @@ describe("query string", function () {
         expect(errors.length).toEqual(1);
     });
 });
+it("should check the error array for height and width is empty", function () {
+    var errors = [];
+    index_1.default.testQueryStringNumber('200', 'message-here', errors);
+    expect(errors.length).toEqual(0);
+});
+it("should check the error array for height and width has an error", function () {
+    var errors = [];
+    index_1.default.testQueryStringNumber('', 'message-here', errors);
+    expect(errors.length).toEqual(1);
+});
+it("checks if the file already is loaded in the full folder", function () {
+    var photoDir = __dirname + '/photos/';
+    var fullDir = photoDir + 'full/';
+    var errors = [];
+    var fileName = " ";
+    index_1.default.checkIfTheFileAlreadyExists(fullDir, fileName, errors);
+    expect(errors.length).toEqual(1);
+});

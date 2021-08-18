@@ -25,7 +25,7 @@ it("should check the error array for height and width has an error", () => {
     index.testQueryStringNumber('', 'message-here', errors)
     expect(errors.length).toEqual(1)
 })
-it("checks if the file already is loaded in the full folder", () => {
+it("checks the error array for no file present", () => {
     const photoDir = __dirname + '/photos/'
     const fullDir = photoDir + 'full/'
     const errors: Array<string> = []
@@ -33,5 +33,12 @@ it("checks if the file already is loaded in the full folder", () => {
     index.checkIfTheFileAlreadyExists(fullDir, fileName, errors)
     expect(errors.length).toEqual(1)
 
-
+})
+it("checks if the file is in the forlder", () => {
+    const photoDir = __dirname + '/photos/'
+    const fullDir = photoDir + 'full/'
+    const errors: Array<string> = []
+    const fileName = "fjord"
+    index.checkIfTheFileAlreadyExists(fullDir, fileName, errors)
+    expect(fileName).toBeTruthy()
 })

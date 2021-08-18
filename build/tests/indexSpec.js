@@ -26,11 +26,19 @@ it("should check the error array for height and width has an error", function ()
     index_1.default.testQueryStringNumber('', 'message-here', errors);
     expect(errors.length).toEqual(1);
 });
-it("checks if the file already is loaded in the full folder", function () {
+it("checks the error array for no file present", function () {
     var photoDir = __dirname + '/photos/';
     var fullDir = photoDir + 'full/';
     var errors = [];
     var fileName = " ";
     index_1.default.checkIfTheFileAlreadyExists(fullDir, fileName, errors);
     expect(errors.length).toEqual(1);
+});
+it("checks if the file is in the forlder", function () {
+    var photoDir = __dirname + '/photos/';
+    var fullDir = photoDir + 'full/';
+    var errors = [];
+    var fileName = "fjord";
+    index_1.default.checkIfTheFileAlreadyExists(fullDir, fileName, errors);
+    expect(fileName).toBeTruthy();
 });

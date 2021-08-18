@@ -46,39 +46,6 @@ function checkIfTheFileAlreadyExists(fullDir: String, fileName: String, errors: 
 }
 
 
-//see if the thumbnail doesn't exist then run sharp
-function checkForExistenceAndRunSharp(fileName: string, width: string, height: string) {
-    const thumbFileName = `${fileName}_${width}x${height}.jpeg`
-    const thumbFilePath = `${thumbDir}${thumbFileName}`
-    const thumbExists = fs.existsSync(thumbFilePath)
-    if (!thumbExists) {
-        console.log("This photo is missing so sharp will make it!")
-        //run the image through sharp and render photo
-        sharp(fullDir + fileName + '.jpeg')
-            .resize(Number(width), Number(height))
-            .toFile(thumbFilePath, function (err: Error, info: Object) {
-                if (err === null) {
-                    return (
-                        `<img src="${thumbFileName}" />`
-                    )
-                } else {
-                    return (err)
-                }
-            })
-    } else {
-        //image exists ---show image
-        return (
-            `<img src="${thumbFileName}" />`
-        )
-
-    }
-}
-
-//this checks the error array and the thumb and creates an image if is doesn't exist
-
-
-
-
 app.use(express.static(thumbDir))
 
 app.get('/api', (req, res) => {
@@ -95,52 +62,41 @@ app.get('/api', (req, res) => {
     checkIfTheFileAlreadyExists(fullDir, fileName.toString(), errors)
 
 
+
+    //this checks the error array and the thumb and creates an image if is doesn't exist
+
     if (errors.length > 0) {
-        JSON.stringify(errors)
-        res.json(errors)
+        res.send(errors)
+    } else {
+        //see if the thumbnail doesn't exist then run sharp
+        const thumbFileName = `${fileName}_${width}x${height}.jpeg`
+        const thumbFilePath = `${thumbDir}${thumbFileName}`
+        const thumbExists = fs.existsSync(thumbFilePath)
+        if (!thumbExists) {
+            console.log("This photo isn't created yet, but Sharp will make your request!")
+            //run the image through sharp and render photo
+            sharp(fullDir + fileName + '.jpeg')
+                .resize(Number(width), Number(height))
+                .toFile(thumbFilePath, function (err: Error, info: Object) {
+                    if (err === null) {
+                        res.send(
+                            `<img src="${thumbFileName}" />`
+                        )
+                    } else {
+                        res.send(err)
+                    }
+                })
+        } else {
+            //image exists ---show image
+            res.send(
+                `<img src="${thumbFileName}" />`
+            )
+
+        }
+
     }
 
 
-
-    res.send(checkForExistenceAndRunSharp(fileName.toString(), width.toString(), height.toString()))
-
-
-
-
-    //this checks the error array and the thumb and creates an image if is doesn't exist
-    // function checkErrorsAndMakeThumb() {
-    //     if (errors.length > 0) {
-    //         res.send(errors)
-    //     } else {
-    //         //see if the thumbnail doesn't exist then run sharp
-    //         const thumbFileName = `${fileName}_${width}x${height}.jpeg`
-    //         const thumbFilePath = `${thumbDir}${thumbFileName}`
-    //         const thumbExists = fs.existsSync(thumbFilePath)
-    //         if (!thumbExists) {
-    //             console.log("Hey I'm misssing!")
-    //             //run the image through sharp and render photo
-    //             sharp(fullDir + fileName + '.jpeg')
-    //                 .resize(Number(width), Number(height))
-    //                 .toFile(thumbFilePath, function (err: Error, info: Object) {
-    //                     if (err === null) {
-    //                         res.send(
-    //                             `<img src="${thumbFileName}" />`
-    //                         )
-    //                     } else {
-    //                         res.send(err)
-    //                     }
-    //                 })
-    //         } else {
-    //             //image exists ---show image
-    //             res.send(
-    //                 `<img src="${thumbFileName}" />`
-    //             )
-
-    //         }
-
-    //     }
-
-    // }
 
 
 })

@@ -1,6 +1,8 @@
 import express from 'express';
 import fs from 'fs';
 import { existsSync } from 'fs';
+import test from './appfunctions';
+
 
 const app = express();
 const port = 3000;
@@ -11,6 +13,7 @@ const photoDir = __dirname + '/photos/'
 const fullDir = photoDir + 'full/'
 const thumbDir = photoDir + 'thumb/'
 
+test()
 //check query string for filename
 function testFileName(fileName: String, errors: Array<string>): void {
     if (fileName === undefined || fileName === null || Object.keys(fileName).length === 0) {
@@ -101,12 +104,14 @@ app.get('/api', (req, res) => {
 
 })
 
-
-
-
 app.listen(port, () => {
     console.log(`server is working on local host${port}`);
 })
+
+
+// app.listen(port, () => {
+//     console.log(`server is working on local host${port}`);
+// })
 
 export default {
     testFileName,
@@ -114,3 +119,5 @@ export default {
     checkIfTheFileAlreadyExists,
 
 }
+
+

@@ -6,12 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var fs_1 = __importDefault(require("fs"));
 var fs_2 = require("fs");
+var appfunctions_1 = __importDefault(require("./appfunctions"));
 var app = express_1.default();
 var port = 3000;
 var sharp = require('sharp');
 var photoDir = __dirname + '/photos/';
 var fullDir = photoDir + 'full/';
 var thumbDir = photoDir + 'thumb/';
+appfunctions_1.default();
 //check query string for filename
 function testFileName(fileName, errors) {
     if (fileName === undefined || fileName === null || Object.keys(fileName).length === 0) {
@@ -88,6 +90,9 @@ app.get('/api', function (req, res) {
 app.listen(port, function () {
     console.log("server is working on local host" + port);
 });
+// app.listen(port, () => {
+//     console.log(`server is working on local host${port}`);
+// })
 exports.default = {
     testFileName: testFileName,
     testQueryStringNumber: testQueryStringNumber,

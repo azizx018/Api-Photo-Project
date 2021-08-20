@@ -1,53 +1,16 @@
 import express from 'express';
-import fs from 'fs';
 import { existsSync } from 'fs';
-import test from './appfunctions';
+import fs from 'fs';
+import appfunctions from './appfunctions';
 
 
 const app = express();
 const port = 3000;
 
-
 const sharp = require('sharp');
 const photoDir = __dirname + '/photos/'
 const fullDir = photoDir + 'full/'
 const thumbDir = photoDir + 'thumb/'
-
-test()
-//check query string for filename
-function testFileName(fileName: String, errors: Array<string>): void {
-    if (fileName === undefined || fileName === null || Object.keys(fileName).length === 0) {
-        const message = "filename needed in query string"
-        console.log(message)
-        errors.push(message)
-    } else {
-        console.log(`the filename entered is ${fileName}`)
-    }
-}
-//check that a width/height was entered as a number
-function testQueryStringNumber(str: String, input: String, errors: Array<string>): void {
-
-    if (str === undefined || str === null || Object.keys(str).length === 0
-        || Object.is(NaN, parseInt(str.toString()))) {
-        const message = `A valid ${input} is needed in query string`
-        console.log(message)
-        errors.push(message)
-    } else {
-        console.log(`the ${input} entered is ${str}`)
-    }
-
-}
-//check if the file exists-- assuming all files are jpeg
-function checkIfTheFileAlreadyExists(fullDir: String, fileName: String, errors: Array<string>): void {
-    if (existsSync(`${fullDir}${fileName}.jpeg`)) {
-        console.log("Your file exists")
-    } else {
-        const message = "The file does not exist"
-        console.log(message)
-        errors.push(message)
-    }
-}
-
 
 app.use(express.static(thumbDir))
 
@@ -55,14 +18,14 @@ app.get('/api', (req, res) => {
 
     const errors: Array<string> = []
     const fileName = req.query.filename || ''
-    testFileName(fileName.toString(), errors);
+    appfunctions.testFileName(fileName.toString(), errors);
 
     const height = req.query.height || ''
     const width = req.query.width || ''
-    testQueryStringNumber(width.toString(), 'width', errors)
-    testQueryStringNumber(height.toString(), 'height', errors)
+    appfunctions.testQueryStringNumber(width.toString(), 'width', errors)
+    appfunctions.testQueryStringNumber(height.toString(), 'height', errors)
 
-    checkIfTheFileAlreadyExists(fullDir, fileName.toString(), errors)
+    appfunctions.checkIfTheFileAlreadyExists(fullDir, fileName.toString(), errors)
 
 
 
@@ -109,15 +72,8 @@ app.listen(port, () => {
 })
 
 
-// app.listen(port, () => {
-//     console.log(`server is working on local host${port}`);
-// })
 
-export default {
-    testFileName,
-    testQueryStringNumber,
-    checkIfTheFileAlreadyExists,
 
-}
+export default app
 
 

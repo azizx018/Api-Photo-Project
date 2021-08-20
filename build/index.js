@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var fs_1 = __importDefault(require("fs"));
-var fs_2 = require("fs");
 var appfunctions_1 = __importDefault(require("./appfunctions"));
 var app = express_1.default();
 var port = 3000;
@@ -13,51 +12,16 @@ var sharp = require('sharp');
 var photoDir = __dirname + '/photos/';
 var fullDir = photoDir + 'full/';
 var thumbDir = photoDir + 'thumb/';
-appfunctions_1.default();
-//check query string for filename
-function testFileName(fileName, errors) {
-    if (fileName === undefined || fileName === null || Object.keys(fileName).length === 0) {
-        var message = "filename needed in query string";
-        console.log(message);
-        errors.push(message);
-    }
-    else {
-        console.log("the filename entered is " + fileName);
-    }
-}
-//check that a width/height was entered as a number
-function testQueryStringNumber(str, input, errors) {
-    if (str === undefined || str === null || Object.keys(str).length === 0
-        || Object.is(NaN, parseInt(str.toString()))) {
-        var message = "A valid " + input + " is needed in query string";
-        console.log(message);
-        errors.push(message);
-    }
-    else {
-        console.log("the " + input + " entered is " + str);
-    }
-}
-//check if the file exists-- assuming all files are jpeg
-function checkIfTheFileAlreadyExists(fullDir, fileName, errors) {
-    if (fs_2.existsSync("" + fullDir + fileName + ".jpeg")) {
-        console.log("Your file exists");
-    }
-    else {
-        var message = "The file does not exist";
-        console.log(message);
-        errors.push(message);
-    }
-}
 app.use(express_1.default.static(thumbDir));
 app.get('/api', function (req, res) {
     var errors = [];
     var fileName = req.query.filename || '';
-    testFileName(fileName.toString(), errors);
+    appfunctions_1.default.testFileName(fileName.toString(), errors);
     var height = req.query.height || '';
     var width = req.query.width || '';
-    testQueryStringNumber(width.toString(), 'width', errors);
-    testQueryStringNumber(height.toString(), 'height', errors);
-    checkIfTheFileAlreadyExists(fullDir, fileName.toString(), errors);
+    appfunctions_1.default.testQueryStringNumber(width.toString(), 'width', errors);
+    appfunctions_1.default.testQueryStringNumber(height.toString(), 'height', errors);
+    appfunctions_1.default.checkIfTheFileAlreadyExists(fullDir, fileName.toString(), errors);
     //this checks the error array and the thumb and creates an image if is doesn't exist
     if (errors.length > 0) {
         res.send(errors);
@@ -90,11 +54,4 @@ app.get('/api', function (req, res) {
 app.listen(port, function () {
     console.log("server is working on local host" + port);
 });
-// app.listen(port, () => {
-//     console.log(`server is working on local host${port}`);
-// })
-exports.default = {
-    testFileName: testFileName,
-    testQueryStringNumber: testQueryStringNumber,
-    checkIfTheFileAlreadyExists: checkIfTheFileAlreadyExists,
-};
+exports.default = app;

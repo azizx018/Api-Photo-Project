@@ -20,7 +20,6 @@ app.get('/api', function (req, res) {
     var height = req.query.height || '';
     var width = req.query.width || '';
     appfunctions_1.default.testQueryStringNumber(width.toString(), 'width', errors);
-    appfunctions_1.default.testQueryStringNumber(height.toString(), 'height', errors);
     appfunctions_1.default.checkIfTheFileAlreadyExists(fullDir, fileName.toString(), errors);
     //this checks the error array and the thumb and creates an image if is doesn't exist
     if (errors.length > 0) {

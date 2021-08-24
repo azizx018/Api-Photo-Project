@@ -1,10 +1,10 @@
 import supertest from 'supertest';
-import index from '../index';
 const sharp = require('sharp');
 import appfunctions from '../appfunctions';
 import app from '../index';
 import { existsSync } from 'fs';
 import fs from 'fs';
+import utilities from '../utilities';
 
 const photoDir = __dirname + '/photos/';
 const fullDir = photoDir + 'full/';
@@ -62,18 +62,13 @@ describe('checks the image folder', () => {
 
 describe('image processing', () => {
   it('makes a thumb image', () => {
-    console.log(fullDir);
-    sharp(fullDir + 'fjord.jpeg')
-      .resize(300, 200)
-      .toFile(
-        thumbDir + 'testresult.jpeg',
-        function (err: Error, info: Object) {
-          //expect(err).toBeNull()
-          console.log(err);
-          const fileExists = existsSync(thumbDir + 'testresult.jpeg');
-          expect(fileExists).toBeTrue();
-        }
-      );
+    const fileName = 'fjord';
+    const width = '200';
+    const height = '200';
+    const thumbFileName = `${fileName}_${width}x${height}.jpeg`;
+    const thumbFilePath = `${thumbDir}${thumbFileName}`;
+    utilities.createImage(fileName, width, height, thumbFilePath);
+    expect(thumbFileName).toEqual('fjord_200x200.jpeg')
   });
 });
 afterAll(() => {

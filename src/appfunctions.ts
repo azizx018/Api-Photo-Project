@@ -1,8 +1,5 @@
 import { existsSync } from 'fs';
 
-//const photoDir = __dirname + '/photos/';
-//const fullDir = photoDir + 'full/';
-//const thumbDir = photoDir + 'thumb/';
 
 //check query string for filename
 function testFileName(fileName: String, errors: Array<string>): void {

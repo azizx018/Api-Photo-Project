@@ -4,10 +4,10 @@ import appfunctions from './appfunctions';
 import utilities from './utilities';
 
 const app = express();
-const port = 3000;
-const photoDir = __dirname + '/photos/';
-const fullDir = photoDir + 'full/';
-const thumbDir = photoDir + 'thumb/';
+const port: number = 3000;
+const photoDir: string = __dirname + '/photos/';
+const fullDir: string = photoDir + 'full/';
+const thumbDir: string = photoDir + 'thumb/';
 
 app.use(express.static(thumbDir));
 
@@ -31,36 +31,24 @@ app.get('/api', (req: Request, res: Response): void => {
   if (errors.length > 0) {
     res.json(errors);
   } else {
-    //see if the thumbnail doesn't exist then run sharp
-    const thumbFileName = `${fileName}_${width}x${height}.jpeg`;
-    const thumbFilePath = `${thumbDir}${thumbFileName}`;
-    const thumbExists = fs.existsSync(thumbFilePath);
+    //if the thumbnail doesn't exist then run sharp
+    const thumbFileName: string = `${fileName}_${width}x${height}.jpeg`;
+    const thumbFilePath: string = `${thumbDir}${thumbFileName}`;
+    const thumbExists: boolean = fs.existsSync(thumbFilePath);
     if (!thumbExists) {
       console.log(
         "This photo isn't created yet, but Sharp will make your request!"
       );
-      //run the image through sharp and render photo
+      //run the image through sharp
       utilities.createImage(fileName, width, height, thumbFilePath);
-
-
-      // sharp(fullDir + fileName + '.jpeg')
-      //   .resize(Number(width), Number(height))
-      //   .toFile(thumbFilePath, function (err: Error) {
-      //     if (err === null) {
-      //       res.send(`<img src="${thumbFileName}" />`);
-      //     } else {
-      //       res.send(err);
-      //     }
-      //   });
-    }
-    else {
-      //image exists ---show image
+    } else {
+      //show requested image
       res.send(`<img src="${thumbFileName}" />`);
     }
   }
 });
 
-app.listen(port, () => {
+app.listen(port, (): void => {
   console.log(`server is working on local host${port}`);
 });
 

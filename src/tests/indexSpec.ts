@@ -6,9 +6,9 @@ import { existsSync } from 'fs';
 import fs from 'fs';
 import utilities from '../utilities';
 
-const photoDir = __dirname + '/photos/';
-const fullDir = photoDir + 'full/';
-const thumbDir = photoDir + 'thumb/';
+const photoDir: string = __dirname + '/photos/';
+const fullDir: string = photoDir + 'full/';
+const thumbDir: string = photoDir + 'thumb/';
 
 const request = supertest(app);
 describe('Test endpoint responses', () => {
@@ -48,13 +48,13 @@ describe('height and width errors', () => {
 describe('checks the image folder', () => {
   it('checks the error array for no file present', () => {
     const errors: Array<string> = [];
-    const fileName = ' ';
+    const fileName: string = ' ';
     appfunctions.checkIfTheFileAlreadyExists(fullDir, fileName, errors);
     expect(errors.length).toEqual(1);
   });
   it('checks if the file is in the folder', () => {
     const errors: Array<string> = [];
-    const fileName = 'fjord';
+    const fileName: string = 'fjord';
     appfunctions.checkIfTheFileAlreadyExists(fullDir, fileName, errors);
     expect(fileName).toBeTruthy();
   });
@@ -62,17 +62,17 @@ describe('checks the image folder', () => {
 
 describe('image processing', () => {
   it('makes a thumb image', () => {
-    const fileName = 'fjord';
-    const width = '200';
-    const height = '200';
-    const thumbFileName = `${fileName}_${width}x${height}.jpeg`;
-    const thumbFilePath = `${thumbDir}${thumbFileName}`;
+    const fileName: string = 'fjord';
+    const width: string = '200';
+    const height: string = '200';
+    const thumbFileName: string = `${fileName}_${width}x${height}.jpeg`;
+    const thumbFilePath: string = `${thumbDir}${thumbFileName}`;
     utilities.createImage(fileName, width, height, thumbFilePath);
     expect(thumbFileName).toEqual('fjord_200x200.jpeg')
   });
 });
 afterAll(() => {
-  const fileExists = existsSync(thumbDir + 'testresult.jpeg');
+  const fileExists: boolean = existsSync(thumbDir + 'testresult.jpeg');
   if (fileExists) {
     fs.unlinkSync(thumbDir + 'testresult.jpeg');
   }

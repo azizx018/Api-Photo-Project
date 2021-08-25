@@ -27,26 +27,17 @@ app.get('/api', function (req, res) {
         res.json(errors);
     }
     else {
-        //see if the thumbnail doesn't exist then run sharp
+        //if the thumbnail doesn't exist then run sharp
         var thumbFileName = fileName + "_" + width + "x" + height + ".jpeg";
         var thumbFilePath = "" + thumbDir + thumbFileName;
         var thumbExists = fs_1.default.existsSync(thumbFilePath);
         if (!thumbExists) {
             console.log("This photo isn't created yet, but Sharp will make your request!");
-            //run the image through sharp and render photo
+            //run the image through sharp
             utilities_1.default.createImage(fileName, width, height, thumbFilePath);
-            // sharp(fullDir + fileName + '.jpeg')
-            //   .resize(Number(width), Number(height))
-            //   .toFile(thumbFilePath, function (err: Error) {
-            //     if (err === null) {
-            //       res.send(`<img src="${thumbFileName}" />`);
-            //     } else {
-            //       res.send(err);
-            //     }
-            //   });
         }
         else {
-            //image exists ---show image
+            //show requested image
             res.send("<img src=\"" + thumbFileName + "\" />");
         }
     }

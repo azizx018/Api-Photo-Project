@@ -1,6 +1,6 @@
 const sharp = require('sharp');
-const photoDir = __dirname + '/photos/';
-const fullDir = photoDir + 'full/';
+const photoDir: string = __dirname + '/photos/';
+const fullDir: string = photoDir + 'full/';
 
 //run the image through sharp
 function createImage(fileName: String, width: String, height: String, thumbFilePath: String): void {

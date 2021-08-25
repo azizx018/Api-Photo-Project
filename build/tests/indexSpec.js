@@ -43,6 +43,8 @@ var supertest_1 = __importDefault(require("supertest"));
 var sharp = require('sharp');
 var appfunctions_1 = __importDefault(require("../appfunctions"));
 var index_1 = __importDefault(require("../index"));
+var fs_1 = require("fs");
+var fs_2 = __importDefault(require("fs"));
 var utilities_1 = __importDefault(require("../utilities"));
 var photoDir = __dirname + '/photos/';
 var fullDir = photoDir + 'full/';
@@ -112,9 +114,9 @@ describe('image processing', function () {
         expect(thumbFileName).toEqual('fjord_200x200.jpeg');
     });
 });
-// afterAll(() => {
-//   const fileExists = existsSync(thumbDir + 'testresult.jpeg');
-//   if (fileExists) {
-//     fs.unlinkSync(thumbDir + 'testresult.jpeg');
-//   }
-// });
+afterAll(function () {
+    var fileExists = fs_1.existsSync(thumbDir + 'testresult.jpeg');
+    if (fileExists) {
+        fs_2.default.unlinkSync(thumbDir + 'testresult.jpeg');
+    }
+});
